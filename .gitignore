@@ -1,0 +1,28 @@
+#Build output
+build/
+out/
+bin/
+obj/
+
+*o
+*.obj
+*.a
+*.so
+*.dylib
+*.exe
+
+#CMAKE
+CMakeFiles/
+CmakeCache.txt
+cmake_install.cmake
+MakeFile
+compile_command.json
+
+#Editor /IDE 
+.vscode 
+.idea 
+.*swp
+*-
+
+#OS cruft 
+.DS_Store
