@@ -16,9 +16,10 @@ class FixedBlockPool
         Slot() noexcept {}
         ~Slot() noexcept {}
     };
+static_assert(allignof(Slot) >= alignof(T),
+              "Slot must be aligned at least as strictly as T")
 
-public:
-    FixedBlockPool() noexcept
+    public : FixedBlockPool() noexcept
     {
         for (std::size_t i = 0; i + 1 < BlockCount; ++i)
         {
