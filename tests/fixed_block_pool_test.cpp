@@ -63,12 +63,43 @@ void freed_block_is_reused()
     assert(pool.in_use() == 1);
 }
 
+void deallocating_nullptr_does_nothing()
+{
+    FixedBlockPool<OrderLevel, 4> pool;
+    void *block = pool.allocate();
+    assert(pool.in_use() == 1);
+
+    pool.deallocate(nullptr);
+    assert(pool.in_use() == 1);
+
+    pool.deallocate(block);
+    assert(pool.in_use() == 0);
+}
+
+struct alignas(64) CacheLineBlock
+{
+    char data[64];
+};
+
+void block_respect_alignment_of_t()
+{
+    FixedBlockPool<CacheLineBlock, 4> pool;
+
+    for (int i = 0; i < 4; ++i)
+    {
+        void *block = pool.allocate();
+        assert(block != nullptr);
+        assert(reinterpret_cast<std::uintptr_t>(block) % alignof(CacheLineBlock) == 0);
+    }
+}
 int main()
 {
     new_pool_is_empty();
     allocates_until_full_then_returns_nullptr();
     returns_distinct_pointers;
     freed_block_is_reused;
+    deallocating_nullptr_does_nothing();
+    block_respect_alignment_of_t();
     std::puts("All test passed");
     return 0;
 }
