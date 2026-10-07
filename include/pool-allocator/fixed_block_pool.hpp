@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstddef>
-#include <cstdint>
 
 template <typename T, std::size_t BlockCount>
 class FixedBlockPool
@@ -16,10 +15,11 @@ class FixedBlockPool
         Slot() noexcept {}
         ~Slot() noexcept {}
     };
-static_assert(allignof(Slot) >= alignof(T),
-              "Slot must be aligned at least as strictly as T")
+    static_assert(alignof(Slot) >= alignof(T),
+                  "Slot must be aligned at least as strictly as T");
 
-    public : FixedBlockPool() noexcept
+public:
+    FixedBlockPool() noexcept
     {
         for (std::size_t i = 0; i + 1 < BlockCount; ++i)
         {
@@ -31,9 +31,9 @@ static_assert(allignof(Slot) >= alignof(T),
     }
 
     // Not copyable. The arena is a fixed array and allocate()
-    // hands out pointers to it , so copying the pool would leave
+    // hands out pointers into it , so copying the pool would leave
     // those pointers aimed at the original, not the copy.
-    // Not movale yet keeping the first version simple
+    // Not movable yet keeping the first version simple
 
     FixedBlockPool(const FixedBlockPool &) = delete;
     FixedBlockPool &operator=(const FixedBlockPool &) = delete;
